@@ -1,6 +1,6 @@
 # interceptor-data-population
 
-Este proyecto demuestra el uso de interceptores para poblar datos de manera automática en los servicios, separando las responsabilidades de enriquecimiento de datos del controlador. Está diseñado como un ejemplo didáctico para entender cómo inyectar información contextual en una solicitud sin pasarla manualmente desde el controlador.
+Este proyecto demuestra el uso de interceptores para poblar datos de manera automática en los servicios, separando las responsabilidades de enriquecimiento de datos del controlador. Está diseñado como un ejemplo didáctico para entender cómo inyectar información contextual en una solicitud sin pasarla manualmente desde el controlador, **manteniendo tu código limpio y enfocado en la lógica de negocio**.
 
 ## 🎯 Objetivos
 
@@ -25,16 +25,65 @@ Este proyecto demuestra el uso de interceptores para poblar datos de manera auto
 
 ## ✅ Lo que estás mostrando con tu diseño
 
-- Separación de responsabilidades clara:
-    - El interceptor se encarga de la lógica transversal: poblar datos.
-    - El controlador no sabe nada del proceso de "enriquecer" al usuario.
-    - El servicio trabaja con objetos ya enriquecidos: bajo acoplamiento.
+- **Separación de responsabilidades clara**:
+  - El interceptor se encarga de la lógica transversal: poblar datos.
+  - El controlador no sabe nada del proceso de "enriquecer" al usuario.
+  - El servicio trabaja con objetos ya enriquecidos: bajo acoplamiento.
 
-- Demostración de cómo se **inyecta** información contextual en la request sin necesidad de pasársela a mano desde el controlador.
+- **Demostración de cómo se inyecta información contextual en la request sin necesidad de pasársela a mano desde el controlador.** Imagina inyectar automáticamente información del usuario autenticado o detalles de configuración basados en la solicitud.
 
-- Los DTOs reflejan lo que se necesita mostrar, no todo el modelo. Es perfecto para explicar:
-    - Por qué no devolvemos entidades.
-    - Cómo crear distintas vistas del mismo modelo (basic, full, etc.).
+- **Los DTOs reflejan lo que se necesita mostrar, no todo el modelo.** Es perfecto para explicar:
+  - Por qué no devolvemos entidades completas directamente a la API.
+  - Cómo crear distintas vistas del mismo modelo (basic, full, etc.) para diferentes necesidades.
+
+---
+
+## 🚀 Cómo clonar y levantar el proyecto
+
+1.  **Clonar el repositorio:**
+    ```bash
+    git clone <URL_DEL_REPOSITORIO>
+    cd interceptor-data-population
+    ```
+
+2.  **Requisitos previos:** Asegúrate de tener instalado lo siguiente:
+  * [Especificar aquí los requisitos, por ejemplo: Java JDK (versión), Maven o Gradle, Docker (si aplica), etc.]
+
+3.  **Construir el proyecto:**
+  * Si usas Maven:
+      ```bash
+      mvn clean install
+      ```
+  * Si usas Gradle:
+      ```bash
+      ./gradlew build
+      ```
+
+4.  **Ejecutar la aplicación:** La forma de ejecutar la aplicación dependerá del framework utilizado (Spring, Quarkus, etc.). Aquí te dejo ejemplos comunes:
+  * **Spring Boot (con Maven):**
+      ```bash
+      mvn spring-boot:run
+      ```
+  * **Spring Boot (con Gradle):**
+      ```bash
+      ./gradlew bootRun
+      ```
+  * **Quarkus (en modo desarrollo):**
+      ```bash
+      ./mvnw quarkus:dev
+      ```
+    o
+      ```bash
+      ./gradlew quarkusDev
+      ```
+  * **Quarkus (como JAR ejecutable):** Después de construir, ejecuta el JAR que se encuentra en el directorio `target`:
+      ```bash
+      java -jar target/interceptor-data-population-*.jar
+      ```
+
+    [**Nota:** Adapta estos comandos según la configuración específica de tu proyecto.]
+
+5.  **Acceder a la aplicación:** Una vez que la aplicación se esté ejecutando, podrás acceder a los endpoints de prueba. Por ejemplo: `http://localhost:8080/users/populate/basic/123`.
 
 ---
 
@@ -58,59 +107,29 @@ En este proyecto usamos **interceptores** para poblar datos antes de que lleguen
 Supongamos que queremos **inyectar automáticamente el usuario autenticado** para que el servicio lo reciba sin que el controlador tenga que pasarlo:
 
 - En **Spring**, lo hacemos con un `HandlerInterceptor`, que toma el token de la request, busca al usuario, y lo guarda en un contexto accesible por los servicios (por ejemplo, con `ThreadLocal` o atributos en el request).
-- En **Quarkus**, usamos un `ContainerRequestFilter` que intercepta la request antes de llegar al recurso JAX-RS, y hace lo mismo.
 
----
+  ```java
+  public class AuthenticationInterceptor implements HandlerInterceptor {
+      @Autowired
+      private UserService userService;
 
-### Diagram de flujo de request
+      @Override
+      public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+          String token = request.getHeader("Authorization");
+          if (token != null && token.startsWith("Bearer ")) {
+              String userId = extractUserIdFromToken(token.substring(7));
+              User authenticatedUser = userService.findById(userId);
+              request.setAttribute("authenticatedUser", authenticatedUser);
+          }
+          return true;
+      }
+  }
 
-Usuario llama:  GET /users/populate/basic/{userId}
-↓
-UserBasicController
-- Valida que userId sea >= 1 automáticamente (por @Min(1))
-  ↓
-  UserBasicService
-- Lógica de negocio local (ej: chequear si el usuario ya está en cache)
-  ↓
-  UserInfoBasicInterceptor (mientras tanto...)
-- Se activa por la anotación @PopulateBasicUserInfo
-- Extrae userId de la URL
-- Llama a: UserInfoClientService.getFullBasicInfo(userId)
-  ↓
-  UserInfoClientService
-- Llama vía Feign a UserInfoClient.getFullUserInfo(userId)
-  ↓
-  UserInfoClient (FeignClient)
-- Hace el request HTTP a servicio2: /user-info/populateFull/{userId}
-  ↓
-  Servicio 2 responde
-  ↳ Si OK: devuelve datos de UserInfo
-  ↳ Si error (404, 400, etc):
-  - UserInfoClientService captura el error
-  - Lanza excepción propia (ResourceNotFoundException, BadRequestException) con ayuda de ExceptionFactory
-  ↓
-  ExceptionHandlerGlobal
-- Captura la excepción lanzada
-- Devuelve respuesta de error customizada al cliente con ApiError
-
-
-[Request] → [Controller] → [Interceptor] → [Service Local]
-↘ [ClientService] → [FeignClient] → [Servicio2]
-↘ (manejo de error automático si falla)
-
-
-Qué beneficios tiene este flujo?
-Validaciones tempranas de parámetros (@Min, @NotNull en el controller).
-
-Interceptación de request antes de que llegue al método (con tu interceptor).
-
-Clientes Feign encapsulados en un Service especializado (no se llama FeignClient directamente desde el interceptor).
-
-Errores controlados y normalizados usando ExceptionFactory y ExceptionHandlerGlobal.
-
-
-
-
-### 🎯 Conclusión
-
-Aunque los nombres cambian entre frameworks, el objetivo es el mismo: **ejecutar lógica antes (o después) del controlador para desacoplar responsabilidades y enriquecer la request**.
+  // En el servicio:
+  @Service
+  public class MyService {
+      public void processRequest(HttpServletRequest request) {
+          User user = (User) request.getAttribute("authenticatedUser");
+          // Lógica de negocio utilizando el usuario autenticado
+      }
+  }
