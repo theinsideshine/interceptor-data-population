@@ -18,10 +18,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Component
 public class UserInfoBasicInterceptor implements HandlerInterceptor {
 
-   /* @Autowired
-    @Lazy
-    private UserInfoClient userInfoClient;*/
-
 
     @Autowired
     @Lazy
