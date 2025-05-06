@@ -138,8 +138,19 @@ Suppose we want to **automatically inject the authenticated user** so that the s
 ### 🔁 Diagram 
 [![](imagen/flujo1.png)]
 
-### 🔁 Videos
-[![presentation](imagen/video-1.png)](https://youtu.be/WYAT77In77E)
+[![](imagen/flujo2.png)]
 
+[![](imagen/flujo5.png)]
+
+[![](imagen/flujoerror.png)]
+
+[![](imagen/dtos.png)]
+
+[![](imagen/exceptions.png)]
+
+### 🔁 Videos
+[![presentation](imagen/video1.png)](https://youtu.be/WYAT77In77E)
+
+[![demo](imagen/video2.png)](https://youtu.be/81qGdPhvqX4)
 
 
