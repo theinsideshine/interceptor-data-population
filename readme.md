@@ -133,3 +133,10 @@ Suppose we want to **automatically inject the authenticated user** so that the s
           // Business logic using the authenticated user
       }
   }
+
+[![](imagen/flujo1.png)]
+
+presentation
+[![presentation](imagen/video-1.png)](https://youtu.be/WYAT77In77E)
+
+
