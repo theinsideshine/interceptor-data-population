@@ -150,7 +150,11 @@ Suppose we want to **automatically inject the authenticated user** so that the s
 
 ### 🎥 Videos
 
-[![Presentación](imagen/video1.png)](https://youtu.be/WYAT77In77E)
+[![Presentation](imagen/video1.png)](https://youtu.be/WYAT77In77E)
 
 [![Demo](imagen/video2.png)](https://youtu.be/81qGdPhvqX4)
+
+[![Exceptions](imagen/video3.png)](https://www.youtube.com/watch?v=RIHSZSK_Zqw)
+
+
 

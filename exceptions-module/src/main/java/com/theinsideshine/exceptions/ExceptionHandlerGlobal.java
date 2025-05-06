@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 public class ExceptionHandlerGlobal {
@@ -40,6 +41,17 @@ public class ExceptionHandlerGlobal {
         );
         return handleCommonException(commonException);
     }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiError> handleNoResourceFound(NoResourceFoundException ex, HttpServletRequest request) {
+        CommonException commonException = ExceptionFactory.genericError(
+                ErrorCode.USER_NULL,
+                SERVICE_NAME,
+                request.getRequestURI()
+        );
+        return handleCommonException(commonException);
+    }
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleUnexpectedException(Exception ex, HttpServletRequest request) {

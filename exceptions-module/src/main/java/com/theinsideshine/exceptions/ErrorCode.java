@@ -11,7 +11,8 @@ public enum ErrorCode {
     RESOURCE_CONFLICT(1006, "Resource conflict", "Conflicto con el recurso solicitado."),
     ECHEQ_NOT_FOUND(2001, "Echeq not found", "No se encontró el Echeq solicitado."),
     ECHEQ_CLIENT_ERROR(2002, "Echeq client error", "Error al comunicarse con el servicio de Echeq."),
-    ECHEQ_SERVICE_UNAVAILABLE(2003, "Echeq service unavailable", "El servicio de Echeq no está disponible.");
+    ECHEQ_SERVICE_UNAVAILABLE(2003, "Echeq service unavailable", "El servicio de Echeq no está disponible."),
+    USER_NULL(1007, "User ID is missing", "El identificador de usuario no fue proporcionado.");
 
 
     private final int internalCode;
