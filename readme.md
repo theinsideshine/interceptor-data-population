@@ -134,23 +134,23 @@ Suppose we want to **automatically inject the authenticated user** so that the s
       }
   }
 
+### 🔁 Diagramas
 
-### 🔁 Diagram 
-[!(imagen/flujo1.png)]
+![Flujo 1](imagen/flujo1.png)
 
-[![](imagen/flujo2.png)]
+![Flujo 2](imagen/flujo2.png)
 
-[![](imagen/flujo5.png)]
+![Flujo 5](imagen/flujo5.png)
 
-[![](imagen/flujoerror.png)]
+![Flujo Error](imagen/flujoerror.png)
 
-[![](imagen/dtos.png)]
+![DTOs](imagen/dtos.png)
 
-[![](imagen/exceptions.png)]
+![Excepciones](imagen/exceptions.png)
 
-### 🔁 Videos
-[![presentation](imagen/video1.png)](https://youtu.be/WYAT77In77E)
+### 🎥 Videos
 
-[![demo](imagen/video2.png)](https://youtu.be/81qGdPhvqX4)
+[![Presentación](imagen/video1.png)](https://youtu.be/WYAT77In77E)
 
+[![Demo](imagen/video2.png)](https://youtu.be/81qGdPhvqX4)
 
