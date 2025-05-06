@@ -136,7 +136,7 @@ Suppose we want to **automatically inject the authenticated user** so that the s
 
 
 ### 🔁 Diagram 
-(imagen/flujo1.png)
+[!(imagen/flujo1.png)]
 
 [![](imagen/flujo2.png)]
 
